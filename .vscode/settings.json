@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/7e5c8cdc-198b-4bf7-808e-4121ca8bce9f/resourceGroups/Vizzy/providers/Microsoft.Web/sites/Vizzy",
+    "appService.deploySubpath": ""
+}

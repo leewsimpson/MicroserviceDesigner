@@ -52,7 +52,7 @@ namespace Util
         diagram.commitTransaction();    
     }
 
-    export function focusOnOperation(diagram, key)
+    export function focus(diagram, key)
     {
         showHideAll(false);
         diagram.startTransaction();

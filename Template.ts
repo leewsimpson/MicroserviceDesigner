@@ -1,8 +1,60 @@
 module Template
 {
-    export function test()
+    function contextItemReferenceTo() : go.Adornment
     {
-        console.log("ok");
+        var $ = go.GraphObject.make;
+        return $("ContextMenuButton",$(go.TextBlock, "Include References To"), { click: function(e, obj)
+        {
+            var node:go.Node = e.diagram.findNodeForKey(obj.part.data.key);                            
+            e.diagram.startTransaction();
+            node.findNodesInto().each(function(n)
+            {
+                if(n.containingGroup!=null)
+                    n.containingGroup.visible = true;
+
+                n.visible = true;
+            });
+            e.diagram.layout = Util.getcurrentLayout();
+            e.diagram.commitTransaction();
+        }})
+    }
+
+    function contextItemReferenceFrom() : go.Adornment
+    {
+        var $ = go.GraphObject.make;
+        return $("ContextMenuButton",$(go.TextBlock, "Include References From"), { click: function(e, obj)
+        {
+            var node:go.Node = e.diagram.findNodeForKey(obj.part.data.key);                            
+            e.diagram.startTransaction();
+            node.findNodesOutOf().each(function(n)
+            {
+                if(n.containingGroup!=null)
+                    n.containingGroup.visible = true;
+                
+                n.visible = true;
+            });
+            e.diagram.layout = Util.getcurrentLayout();
+            e.diagram.commitTransaction();
+        }});
+    }
+
+    function contextMenuHide() : go.Adornment
+    {
+        var $ = go.GraphObject.make;
+        return $("ContextMenuButton", $(go.TextBlock, "Hide"), { click: function(e, obj)
+        {
+            var node = e.diagram.findNodeForKey(obj.part.data.key);
+            e.diagram.startTransaction();
+            node.visible=false;
+            e.diagram.commitTransaction();
+        }
+        });
+    }
+
+    function contextMenuFocus() : go.Adornment
+    {
+        var $ = go.GraphObject.make;
+        return $("ContextMenuButton", $(go.TextBlock, "Focus"), { click: function(e, obj){Util.focus(e.diagram, obj.part.data.key)}});
     }
 
     export function apiTemplate()
@@ -49,14 +101,7 @@ module Template
                             diagram.commandHandler.editTextBlock(txt);                           
                         }
                     }),
-                    $("ContextMenuButton",
-                    $(go.TextBlock, "Hide"), { click: function(e, obj)
-                        {
-                            var node = e.diagram.findNodeForKey(obj.part.data.key);
-                            e.diagram.startTransaction();
-                            node.visible=false;
-                            e.diagram.commitTransaction();
-                        }})
+                    contextMenuHide()
                     )},
                 $(go.TextBlock,
                 {
@@ -139,25 +184,11 @@ module Template
                             }, // the tooltip shows the result of calling nodeInfo(data)
                             new go.Binding("text", "Description"))
                     ),
-                    contextMenu:     // define a context menu for each node
-                    $(go.Adornment, "Vertical",  // that has one button
-                        $("ContextMenuButton", $(go.TextBlock, "Focus"), { click: function(e, obj){Util.focusOnOperation(e.diagram, obj.part.data.key)}}),
-                        $("ContextMenuButton",
-                        $(go.TextBlock, "Hide"), { click: function(e, obj)
-                            {
-                                var node = e.diagram.findNodeForKey(obj.part.data.key);
-                                e.diagram.startTransaction();
-                                node.visible=false;
-                                e.diagram.commitTransaction();
-                            }})
-                    // $("ContextMenuButton", $(go.TextBlock, "Hide"), { click: function(e, obj)
-                        //    {
-                        //        obj.diagram.startTransaction("invisible");
-                        //        console.log(obj.panel.data.key);
-                        //        obj.panel.visible = false;
-                        //        obj.diagram.commitTransaction("invisible");
-                        //    }})
-                    )
+                    contextMenu: $(go.Adornment, "Vertical", 
+                        contextMenuFocus(),
+                        contextMenuHide(),
+                        contextItemReferenceFrom(),
+                        contextItemReferenceTo())
                 },
                 $(go.Shape, "Hexagon",
                 {
@@ -291,19 +322,11 @@ module Template
                             }, // the tooltip shows the result of calling nodeInfo(data)
                             new go.Binding("text", "Description"))
                     ),
-                    contextMenu:     // define a context menu for each node
-                        $(go.Adornment, "Vertical",  // that has one button
-                            $("ContextMenuButton",
-                            $(go.TextBlock, "Focus"), { click: function(e, obj){Util.focusOnOperation(e.diagram, obj.part.data.key);}}),
-                            $("ContextMenuButton",
-                            $(go.TextBlock, "Hide"), { click: function(e, obj)
-                                {
-                                    var node = e.diagram.findNodeForKey(obj.part.data.key);
-                                    e.diagram.startTransaction();
-                                    node.visible=false;
-                                    e.diagram.commitTransaction();
-                                }})
-                        )
+                    contextMenu: $(go.Adornment, "Vertical", 
+                            contextMenuFocus(),
+                            contextMenuHide(),
+                            contextItemReferenceTo(),
+                            contextItemReferenceFrom())
                 },
                 $(go.Shape, "Circle",
                 {
@@ -343,22 +366,11 @@ module Template
                 {
                     width: 100,
                     height: 50,
-                    contextMenu:     // define a context menu for each node
-                    $(go.Adornment, "Vertical",  // that has one button
-                        $("ContextMenuButton",
-                        $(go.TextBlock, "Focus"), { click: function(e, obj)
-                            {
-                                Util.focusOnOperation(e.diagram, obj.part.data.key)
-                            }}),
-                        $("ContextMenuButton",
-                        $(go.TextBlock, "Hide"), { click: function(e, obj)
-                            {
-                                var node = e.diagram.findNodeForKey(obj.part.data.key);
-                                e.diagram.startTransaction();
-                                node.visible=false;
-                                e.diagram.commitTransaction();
-                            }})
-                    )
+                    contextMenu: $(go.Adornment, "Vertical",
+                        contextMenuFocus(),
+                        contextMenuHide(),
+                        contextItemReferenceTo(),
+                        contextItemReferenceFrom())
                 },
                 $(go.Shape, "Rectangle",
                 {
