@@ -66,9 +66,10 @@
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     File
                 </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="#" onclick="load()">Load</a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">                    
                     <a class="dropdown-item" href="#" onclick="save()">Save</a>
+                    <a class="dropdown-item" href="#" onclick="load()">Revert to Last Saved</a>
+                    <a class="dropdown-item" href="#" onclick="save()">Version History</a>
                 </div>
             </li>
             <li class="nav-item dropdown">
@@ -93,6 +94,7 @@
 
         <div class="collapse navbar-collapse justify-content-center">
                 <a class="nav-link disabled" href="#">CASA - RePL v1</a>
+                <div id="unsavedChanges" style="color:white">(Unsaved Changes)</div>
         </div>          
         <div class="collapse navbar-collapse justify-content-right">    
             <ul class="navbar-nav">     

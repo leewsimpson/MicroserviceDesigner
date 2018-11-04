@@ -1,14 +1,29 @@
-var myDiagram;
+var myDiagram:go.Diagram;
+var dataString:string;
+
+function unsavedChanges(value:boolean)
+{
+    if(value)
+    {
+        $("#unsavedChanges").show();
+    }    
+    else
+    {
+        $("#unsavedChanges").hide();
+    }
+}
 
 async function init()
 {
+    dataString = await Util.getData();
+    unsavedChanges(false);
     var gojs = go.GraphObject.make;
     myDiagram = gojs(go.Diagram, "myDiagramDiv",
         {
             "toolManager.hoverDelay": 500,
             LayoutCompleted: function(e) 
             {
-                debugger;
+                //debugger;
                 //var dia = e.diagram;
                 // add height for horizontal scrollbar
                 //dia.div.style.height = (dia.documentBounds.height + 24) + "px";
@@ -23,17 +38,27 @@ async function init()
                 if(e.diagram.selection.first().category=="Operation")
                     e.diagram.currentTool.doCancel();
             },
-            Modified: function() 
-            {
-                debugger;
-                dataString = myDiagram.model.toJson();
-                loadAPIs(dataString);
-                loadSystems(dataString);
-                loadEvents(dataString);
-            },
             layout: Util.getcurrentLayout()
         });
 
+        myDiagram.addModelChangedListener(function(evt) 
+        {
+            if (evt.isTransactionFinished) 
+            {
+                console.log("smell");
+                var latestData = myDiagram.model.toJson();
+                if(dataString != latestData)
+                {
+                    console.log("poop");
+                    dataString = latestData;
+                    unsavedChanges(true);
+                }
+                
+                loadAPIs(dataString);
+                loadSystems(dataString);
+                loadEvents(dataString);
+            }
+        });
         //gojs(go.TextBlock, "Undo"),{ click: function(e, obj) { e.diagram.commandHandler.undo(); } },
 
         myDiagram.contextMenu = gojs(go.Adornment, "Vertical", 
@@ -124,8 +149,7 @@ async function init()
     myDiagram.nodeTemplateMap.add("System", Template.systemTemplate());
     myDiagram.nodeTemplateMap.add("Event", Template.eventTemplate());
     myDiagram.linkTemplateMap.add("", Template.linkTemplate());
-   
-    var dataString = await Util.getData();
+       
     myDiagram.model = go.Model.fromJson(dataString);
 
 };
@@ -142,12 +166,12 @@ function getCategory(dataString, category)
 
 function includeOperation(key)
 {
-    var fullNode = myDiagram.model.nodeDataArray.find(function(node){return node.key==key});
+    var fullNode = myDiagram.findNodeForKey(key);
 
     myDiagram.startTransaction();
     myDiagram.nodes.each(function(node) 
     {
-       if(node.data.key==key || node.data.key == fullNode.group)
+       if(node.data.key==key || node.data.key == fullNode.containingGroup.data.key)
        {
            node.visible = true;
        }
@@ -248,6 +272,7 @@ function loadEvents(dataString)
 async function save()
 {
     Util.saveData(myDiagram.model.toJson());
+    unsavedChanges(false);
     myDiagram.isModified = false;
 }
 
@@ -255,6 +280,7 @@ async function load()
 {
     var data = await Util.getData();
     myDiagram.model = go.Model.fromJson(data);
+    unsavedChanges(false);
 }
 
 function generateImageLink(x)
