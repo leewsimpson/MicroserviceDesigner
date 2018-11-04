@@ -13,6 +13,25 @@ function unsavedChanges(value:boolean)
     }
 }
 
+/*
+var confirmModal  = function(callback)
+{  
+    $("#btn-confirm").on("click", function(){
+        $("#mi-modal").modal('show');
+    });
+
+    $("#modal-btn-si").on("click", function(){
+        callback(true);
+        $("#mi-modal").modal('hide');
+    });
+
+    $("#modal-btn-no").on("click", function(){
+        callback(false);
+        $("#mi-modal").modal('hide');
+    });
+};*/
+
+
 async function init()
 {
     dataString = await Util.getData();
@@ -38,7 +57,16 @@ async function init()
                 if(e.diagram.selection.first().category=="Operation")
                     e.diagram.currentTool.doCancel();
             },
-            layout: Util.getcurrentLayout()
+            layout: Util.getcurrentLayout(),
+            SelectionDeleting:function(d)
+            {
+                //d.cancel=true;
+               // confirmModal(function(confirm:boolean)
+                //{
+                  //  if(confirm)
+                   //     d.cancel=false;
+                //})
+            }
         });
 
         myDiagram.addModelChangedListener(function(evt) 
