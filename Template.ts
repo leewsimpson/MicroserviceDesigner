@@ -1,5 +1,6 @@
 module Template
 {
+    //#region context menus
     function contextItemReferenceTo() : go.Adornment
     {
         var $ = go.GraphObject.make;
@@ -56,6 +57,7 @@ module Template
         var $ = go.GraphObject.make;
         return $("ContextMenuButton", $(go.TextBlock, "Focus"), { click: function(e, obj){Util.focus(e.diagram, obj.part.data.key)}});
     }
+    //#endregion
 
     export function apiTemplate()
     {
@@ -131,35 +133,77 @@ module Template
     export function domainTemplate()
     {
         var $ = go.GraphObject.make;
-
         return $(go.Group, "Vertical",
             {
-                ungroupable: true
-            },
-            $(go.TextBlock,
+                fromSpot: go.Spot.AllSides,
+                toSpot: go.Spot.AllSides,
+                stretch: go.GraphObject.Fill,
+                ungroupable: true,
+                computesBoundsAfterDrag: true,
+                computesBoundsIncludingLocation: true,
+                mouseDragEnter: function(e, group, prev){group.isHighlighted = true;},
+                mouseDragLeave: function(e, group, next){group.isHighlighted = false;},
+                mouseDrop: function(e, group){group.addMembers(e.diagram.selection, true);},
+                layout: $(go.LayeredDigraphLayout,
                 {
+                    setsPortSpots: true,
+                    direction: 90
+                }),
+                contextMenu: $(go.Adornment, "Vertical", 
+                    $("ContextMenuButton", $(go.TextBlock, "Focus"), 
+                    {
+                        click: function(e, obj){Util.focusOnAPI(e.diagram, obj.part.data.key)}
+                    }),
+                    $("ContextMenuButton", $(go.TextBlock, "New API"), 
+                    { 
+                        click: function(e, obj)
+                        {
+                            var diagram = e.diagram;
+                            diagram.startTransaction('new API');
+                            var data = 
+                            {
+                                category : "API",
+                                isGroup : true,
+                                group : obj.part.data.key,
+                                name : "newAPI"
+                            };
+                            diagram.model.addNodeData(data);
+                            var part = diagram.findPartForData(data);
+                            part.location = diagram.toolManager.contextMenuTool.mouseDownPoint;
+                            diagram.commitTransaction('new API');
+                            var txt = part.findObject("name");
+                            diagram.commandHandler.editTextBlock(txt);                           
+                        }
+                    }),
+                    contextMenuHide()
+                    )},
+                $(go.TextBlock,
+                {
+                    name:"name",
                     margin: 8,
                     maxSize: new go.Size(160, NaN),
                     wrap: go.TextBlock.WrapFit,
-                    stroke: "#00a1de",
-                    font: "bold 15px sans-serif"
+                    stroke: "darkGray",
+                    editable: true
                 },
-                new go.Binding("text", "name")),
-            $(go.Panel, "Auto",
-                $(go.Shape, "RoundedRectangle",
-                {
-                    fill: "transparent",
-                    strokeWidth: 2,
-                    strokeDashArray: [4, 2],
-                    stroke: "#00a1de"
-                }),
-                $(go.Placeholder,
-                {
-                    padding: 5
-                })
+                new go.Binding("text", "name").makeTwoWay()
+                ),
+                $(go.Panel, "Auto",
+                    $(go.Shape, "RoundedRectangle",
+                    {
+                        fill: "white",
+                        strokeWidth: 1,
+                        stroke:"darkGray",
+                        strokeDashArray:[5,10]
+                    }),
+                    $(go.Placeholder,
+                    {
+                        padding: 20
+                    })
             )
         );
     }
+
 
     export function eventTemplate()
     {

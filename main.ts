@@ -8,6 +8,7 @@ async function init()
             "toolManager.hoverDelay": 500,
             LayoutCompleted: function(e) 
             {
+                debugger;
                 //var dia = e.diagram;
                 // add height for horizontal scrollbar
                 //dia.div.style.height = (dia.documentBounds.height + 24) + "px";
@@ -24,7 +25,11 @@ async function init()
             },
             Modified: function() 
             {
+                debugger;
                 dataString = myDiagram.model.toJson();
+                loadAPIs(dataString);
+                loadSystems(dataString);
+                loadEvents(dataString);
             },
             layout: Util.getcurrentLayout()
         });
@@ -52,6 +57,26 @@ async function init()
                         diagram.commandHandler.editTextBlock(txt);
                     } 
                 }),
+            gojs("ContextMenuButton", gojs(go.TextBlock, "New Domain"),
+                { 
+                    click: function(e, obj) 
+                    {
+                        var diagram = e.diagram;
+                        diagram.startTransaction('new Domain');
+                        var data = 
+                        {
+                            category : "Domain",
+                            isGroup : true,
+                            name: "newDomain"
+                        };
+                        diagram.model.addNodeData(data);
+                        var part = diagram.findPartForData(data);
+                        part.location = diagram.toolManager.contextMenuTool.mouseDownPoint;
+                        diagram.commitTransaction('new Domain');
+                        var txt = part.findObject("name");
+                        diagram.commandHandler.editTextBlock(txt);
+                    } 
+                }),                
             gojs("ContextMenuButton", gojs(go.TextBlock, "New Event"),
                 { 
                     click: function(e, obj) 
@@ -102,9 +127,7 @@ async function init()
    
     var dataString = await Util.getData();
     myDiagram.model = go.Model.fromJson(dataString);
-    loadAPIs(dataString);
-    loadSystems(dataString);
-    loadEvents(dataString);
+
 };
 
 function getCategory(dataString, category)
