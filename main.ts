@@ -199,7 +199,7 @@ function includeOperation(key)
     myDiagram.startTransaction();
     myDiagram.nodes.each(function(node) 
     {
-       if(node.data.key==key || node.data.key == fullNode.containingGroup.data.key)
+       if(node.data.key==key || (fullNode.containingGroup != null && node.data.key == fullNode.containingGroup.data.key))
        {
            node.visible = true;
        }
