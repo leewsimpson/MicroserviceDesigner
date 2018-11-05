@@ -1,5 +1,6 @@
 var myDiagram:go.Diagram;
 var dataString:string;
+var project:string;
 
 function unsavedChanges(value:boolean)
 {
@@ -34,8 +35,13 @@ var confirmModal  = function(callback)
 
 async function init()
 {
-    dataString = await Util.getData();
-    unsavedChanges(false);
+    const urlParams = new URLSearchParams(window.location.search);
+    project = urlParams.get('project');
+
+    //dataString = await Util.getData();
+    //unsavedChanges(false);
+    load();
+
     var gojs = go.GraphObject.make;
     myDiagram = gojs(go.Diagram, "myDiagramDiv",
         {
@@ -178,7 +184,7 @@ async function init()
     myDiagram.nodeTemplateMap.add("Event", Template.eventTemplate());
     myDiagram.linkTemplateMap.add("", Template.linkTemplate());
        
-    myDiagram.model = go.Model.fromJson(dataString);
+    //myDiagram.model = go.Model.fromJson(dataString);
 
 };
 
@@ -307,7 +313,15 @@ async function save()
 async function load() 
 {
     var data = await Util.getData();
-    myDiagram.model = go.Model.fromJson(data);
+    if(data == null)
+    {
+        //myDiagram.model = new go.Model();
+    }
+    else
+    {
+        myDiagram.model = go.Model.fromJson(data);
+    }
+    dataString = data;
     unsavedChanges(false);
 }
 

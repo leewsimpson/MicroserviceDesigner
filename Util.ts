@@ -104,16 +104,20 @@ namespace Util
 
     export async function getData()
     {
+        $("#Project").text(project);
         const list = await $.ajax(
         {
-            url: "https://vizzyapi.azurewebsites.net/api/data/casa",
+            url: "https://vizzyapi.azurewebsites.net/api/data/" + project,
         });
+
+        if(list.length==0)
+            return null;
 
         const id = list[0];
 
         const result = await $.ajax(
             {
-                url: "https://vizzyapi.azurewebsites.net/api/data/casa/" + id,
+                url: "https://vizzyapi.azurewebsites.net/api/data/" + project + "/" + id,
             });
             
         return result;
@@ -121,11 +125,9 @@ namespace Util
 
     export function saveData(d)
     {
-        var test = JSON.stringify(d);
-
         $.ajax(
             {
-                url: "https://vizzyapi.azurewebsites.net/api/data/casa",
+                url: "https://vizzyapi.azurewebsites.net/api/data/" + project,
                 type: "POST",
                 data: JSON.stringify(d),
                 contentType: "application/json",
