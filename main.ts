@@ -14,7 +14,7 @@ function unsavedChanges(value:boolean)
     }
 }
 
-/*
+
 var confirmModal  = function(callback)
 {  
     $("#btn-confirm").on("click", function(){
@@ -30,7 +30,7 @@ var confirmModal  = function(callback)
         callback(false);
         $("#mi-modal").modal('hide');
     });
-};*/
+};
 
 
 async function init()
@@ -310,7 +310,7 @@ async function save()
     myDiagram.isModified = false;
 }
 
-async function load() 
+async function load()
 {
     var data = await Util.getData();
     if(data == null)
