@@ -36,8 +36,6 @@ function init() {
         if (urlParams.get('debugMode'))
             debugMode = true;
         Details.init();
-        //dataString = await Util.getData();
-        //unsavedChanges(false);
         load();
         var gojs = go.GraphObject.make;
         myDiagram = gojs(go.Diagram, "myDiagramDiv", {

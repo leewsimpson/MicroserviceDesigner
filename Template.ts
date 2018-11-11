@@ -3,8 +3,8 @@ module Template
     //#region context menus
     function contextItemReferenceTo() : go.Adornment
     {
-        var $ = go.GraphObject.make;
-        return $("ContextMenuButton",$(go.TextBlock, "Include References To"), { click: function(e, obj)
+        var gojs = go.GraphObject.make;
+        return gojs("ContextMenuButton",gojs(go.TextBlock, "Include References To"), { click: function(e, obj)
         {
             var node:go.Node = e.diagram.findNodeForKey(obj.part.data.key);                            
             e.diagram.startTransaction();
@@ -22,8 +22,8 @@ module Template
 
     function contextItemReferenceFrom() : go.Adornment
     {
-        var $ = go.GraphObject.make;
-        return $("ContextMenuButton",$(go.TextBlock, "Include References From"), { click: function(e, obj)
+        var gojs = go.GraphObject.make;
+        return gojs("ContextMenuButton",gojs(go.TextBlock, "Include References From"), { click: function(e, obj)
         {
             var node:go.Node = e.diagram.findNodeForKey(obj.part.data.key);                            
             e.diagram.startTransaction();
@@ -41,8 +41,8 @@ module Template
 
     function contextMenuHide() : go.Adornment
     {
-        var $ = go.GraphObject.make;
-        return $("ContextMenuButton", $(go.TextBlock, "Hide"), { click: function(e, obj)
+        var gojs = go.GraphObject.make;
+        return gojs("ContextMenuButton", gojs(go.TextBlock, "Hide"), { click: function(e, obj)
         {
             var node = e.diagram.findNodeForKey(obj.part.data.key);
             e.diagram.startTransaction();
@@ -54,8 +54,8 @@ module Template
 
     function contextMenuDetails() : go.Adornment
     {
-        var $ = go.GraphObject.make;
-        return $("ContextMenuButton", $(go.TextBlock, "Details"), { click: function(e, obj)
+        var gojs = go.GraphObject.make;
+        return gojs("ContextMenuButton", gojs(go.TextBlock, "Details"), { click: function(e, obj)
         {
             var node = obj.part.data;
             var diagram:go.Diagram = e.diagram;
@@ -80,15 +80,15 @@ module Template
 
     function contextMenuFocus() : go.Adornment
     {
-        var $ = go.GraphObject.make;
-        return $("ContextMenuButton", $(go.TextBlock, "Focus"), { click: function(e, obj){Util.focus(e.diagram, obj.part.data.key)}});
+        var gojs = go.GraphObject.make;
+        return gojs("ContextMenuButton", gojs(go.TextBlock, "Focus"), { click: function(e, obj){Util.focus(e.diagram, obj.part.data.key)}});
     }
     //#endregion
 
     export function apiTemplate()
     {
-        var $ = go.GraphObject.make;
-        return $(go.Group, "Vertical",
+        var gojs = go.GraphObject.make;
+        return gojs(go.Group, "Vertical",
         {
             fromSpot: go.Spot.AllSides,
             toSpot: go.Spot.AllSides,
@@ -100,17 +100,17 @@ module Template
             mouseDragEnter: function(e, group, prev){group.isHighlighted = true;},
             mouseDragLeave: function(e, group, next){group.isHighlighted = false;},
             mouseDrop: function(e, group){group.addMembers(e.diagram.selection, true);},
-            layout: $(go.LayeredDigraphLayout,
+            layout: gojs(go.LayeredDigraphLayout,
             {
                 setsPortSpots: true,
                 direction: 90
             }),
-            contextMenu: $(go.Adornment, "Vertical", 
-                $("ContextMenuButton", $(go.TextBlock, "Focus"), 
+            contextMenu: gojs(go.Adornment, "Vertical", 
+                gojs("ContextMenuButton", gojs(go.TextBlock, "Focus"), 
                 {
                     click: function(e, obj){Util.focusOnAPI(e.diagram, obj.part.data.key)}
                 }),
-                $("ContextMenuButton", $(go.TextBlock, "New Operation"), 
+                gojs("ContextMenuButton", gojs(go.TextBlock, "New Operation"), 
                 { 
                     click: function(e, obj)
                     {
@@ -134,7 +134,7 @@ module Template
                 contextMenuDetails()
             )
             },
-            $(go.TextBlock,
+            gojs(go.TextBlock,
             {
                 name:"name",
                 margin: 8,
@@ -145,14 +145,14 @@ module Template
             },
                 new go.Binding("text", "name").makeTwoWay()
             ),
-            $(go.Panel, "Spot",
-                $(go.Panel, "Auto",
-                    $(go.Shape, "RoundedRectangle",
+            gojs(go.Panel, "Spot",
+                gojs(go.Panel, "Auto",
+                    gojs(go.Shape, "RoundedRectangle",
                     {
                         fill: "#00a1de",
                         strokeWidth: 0,                        
                     }),
-                    $(go.Placeholder, {padding: 20})
+                    gojs(go.Placeholder, {padding: 20})
                 ),  
                 infoIcon()                            
             )
@@ -161,8 +161,8 @@ module Template
 
     export function domainTemplate()
     {
-        var $ = go.GraphObject.make;
-        return $(go.Group, "Vertical",
+        var gojs = go.GraphObject.make;
+        return gojs(go.Group, "Vertical",
             {
                 fromSpot: go.Spot.AllSides,
                 toSpot: go.Spot.AllSides,
@@ -174,17 +174,17 @@ module Template
                 mouseDragEnter: function(e, group, prev){group.isHighlighted = true;},
                 mouseDragLeave: function(e, group, next){group.isHighlighted = false;},
                 mouseDrop: function(e, group){group.addMembers(e.diagram.selection, true);},
-                layout: $(go.LayeredDigraphLayout,
+                layout: gojs(go.LayeredDigraphLayout,
                 {
                     setsPortSpots: true,
                     direction: 90
                 }),
-                contextMenu: $(go.Adornment, "Vertical", 
-                    $("ContextMenuButton", $(go.TextBlock, "Focus"), 
+                contextMenu: gojs(go.Adornment, "Vertical", 
+                    gojs("ContextMenuButton", gojs(go.TextBlock, "Focus"), 
                     {
                         click: function(e, obj){Util.focusOnAPI(e.diagram, obj.part.data.key)}
                     }),
-                    $("ContextMenuButton", $(go.TextBlock, "New API"), 
+                    gojs("ContextMenuButton", gojs(go.TextBlock, "New API"), 
                     { 
                         click: function(e, obj)
                         {
@@ -208,7 +208,7 @@ module Template
                     contextMenuHide(),
                     contextMenuDetails()                    
                     )},
-                $(go.TextBlock,
+                gojs(go.TextBlock,
                 {
                     name:"name",
                     margin: 8,
@@ -219,15 +219,15 @@ module Template
                 },
                 new go.Binding("text", "name").makeTwoWay()
                 ),
-                $(go.Panel, "Auto",
-                    $(go.Shape, "RoundedRectangle",
+                gojs(go.Panel, "Auto",
+                    gojs(go.Shape, "RoundedRectangle",
                     {
                         fill: "white",
                         strokeWidth: 1,
                         stroke:"darkGray",
                         strokeDashArray:[5,10]
                     }),
-                    $(go.Placeholder,
+                    gojs(go.Placeholder,
                     {
                         padding: 20
                     })
@@ -237,18 +237,18 @@ module Template
 
     export function eventTemplate()
     {
-        var $ = go.GraphObject.make;
+        var gojs = go.GraphObject.make;
 
-        return $(go.Node, "Vertical",
+        return gojs(go.Node, "Vertical",
             {
                 alignment: go.Spot.Center
             },
-            $(go.Panel, "Auto",
+            gojs(go.Panel, "Auto",
                 {
                     width: 50,
                     height: 50,
                     toolTip: toolTip(),
-                    contextMenu: $(go.Adornment, "Vertical", 
+                    contextMenu: gojs(go.Adornment, "Vertical", 
                         contextMenuFocus(),
                         contextMenuHide(),
                         contextItemReferenceFrom(),
@@ -256,7 +256,7 @@ module Template
                         contextMenuDetails()
                         ),
                 },
-                $(go.Shape, "Hexagon",
+                gojs(go.Shape, "Hexagon",
                 {
                     fill: "#0F6E00",
                     strokeWidth: 0,
@@ -267,9 +267,9 @@ module Template
                     fromSpot: go.Spot.AllSides,
                     toSpot: go.Spot.AllSides
                 }),
-                $(go.Panel, "Auto", infoIcon())
+                gojs(go.Panel, "Auto", infoIcon())
             ),
-            $(go.TextBlock,
+            gojs(go.TextBlock,
                 {
                     name:"name",
                     margin: 10,
@@ -286,56 +286,66 @@ module Template
     
     export function linkTemplate()
     {
-        var $ = go.GraphObject.make;
+        var gojs = go.GraphObject.make;
 
-        return $(go.Link,
+        return gojs(go.Link,
             {
                 //routing:go.Link.AvoidsNodes,
                 curve: go.Link.JumpOver,
                 corner: 5,
-                toolTip: toolTip()
+                toolTip: toolTip(),
+                contextMenu: gojs(go.Adornment, "Vertical", 
+                    gojs("ContextMenuButton", gojs(go.TextBlock, "Mapping"), {click: function(e, obj)
+                    {                        
+                        var from = e.diagram.model.findNodeDataForKey(obj.part.data.from).name;
+                        var to = e.diagram.model.findNodeDataForKey(obj.part.data.to).name;
+                        $('#mapper').show(); 
+                        loadMapper(from, to, function(){console.log('mapped');});
+                    }
+                    })
+                )
             // routing: go.Link.Orthogonal ,
                 //layerName: "Foreground",
                 //reshapable: true
                 //toShortLength: 4
             },
-            $(go.Shape,
+            gojs(go.Shape,
             {
                 stroke: "gray",
                 strokeWidth: 1,
                 toArrow: "Standard"
             }),
-            $(go.Shape,
+            gojs(go.Shape,
             {
                 toArrow: "Standard",
                 stroke: "gray",
                 fill: "gray"
             })
-            // $(go.TextBlock, "Calls", {segmentOffset: new go.Point(0,-10)})
+            // gojs(go.TextBlock, "Calls", {segmentOffset: new go.Point(0,-10)})
         );
     }
 
     export function operationTemplate()
     {
-        var $ = go.GraphObject.make;
+        var gojs = go.GraphObject.make;
 
-        return $(go.Node, "Vertical",
+        return gojs(go.Node, "Vertical",
             {
                 alignment: go.Spot.Center
             },
-            $(go.Panel, "Auto",
+            gojs(go.Panel, "Auto",
                 {
                     width: 20,
                     height: 20,
                     toolTip: toolTip(),
-                    contextMenu: $(go.Adornment, "Vertical", 
+                    contextMenu: gojs(go.Adornment, "Vertical", 
                             contextMenuFocus(),
                             contextMenuHide(),
                             contextItemReferenceTo(),
                             contextItemReferenceFrom(),
                             contextMenuDetails())
                 },
-                $(go.Shape, "Circle",
+                gojs(go.Shape, "Circle",
                 {
                     fill: "#002776",
                     strokeWidth: 0,
@@ -346,10 +356,11 @@ module Template
                     fromSpot: go.Spot.AllSides,
                     toSpot: go.Spot.AllSides,
                     alignment: go.Spot.Center
+                    
                 })
             ),
 
-            $(go.TextBlock,
+            gojs(go.TextBlock,
                 {
                     name:"name",
                     margin: 10,
@@ -366,22 +377,22 @@ module Template
 
     export function systemTemplate()
     {
-        var $ = go.GraphObject.make;
+        var gojs = go.GraphObject.make;
 
-        return $(go.Node, "Spot",
+        return gojs(go.Node, "Spot",
         {
             width: 100,
             height: 50,
             toolTip: toolTip(),
-            contextMenu: $(go.Adornment, "Vertical",
+            contextMenu: gojs(go.Adornment, "Vertical",
                 contextMenuFocus(),
                 contextMenuHide(),
                 contextItemReferenceTo(),
                 contextItemReferenceFrom(),
                 contextMenuDetails())
         },
-        $(go.Panel, "Auto",                
-            $(go.Shape, "RoundedRectangle",
+        gojs(go.Panel, "Auto",                
+            gojs(go.Shape, "RoundedRectangle",
             {
                 fill: "gray",
                 strokeWidth: 0,
@@ -392,7 +403,7 @@ module Template
                 fromLinkable: true,
                 toLinkable: true                                             
             }),
-            $(go.TextBlock,
+            gojs(go.TextBlock,
                 {
                     name:"name",
                     margin: 10,
@@ -409,10 +420,11 @@ module Template
 
     function infoIcon() : go.Adornment
     {
-        var $ = go.GraphObject.make;
-        return $(go.Picture, "info.png", 
+        var gojs = go.GraphObject.make;
+        return gojs(go.Picture, "info.png", 
         {
-            maxSize: new go.Size(14, 14), 
+            width: 14, height: 14,
+            imageStretch: go.GraphObject.Uniform,
             alignment: new go.Spot(1,0,-10,10),
             click : function(e, obj)
             {
@@ -426,14 +438,14 @@ module Template
 
     function toolTip()
     {
-        var $ = go.GraphObject.make;
+        var gojs = go.GraphObject.make;
 
-        return $(go.Adornment, "Auto",
-                $(go.Shape,
+        return gojs(go.Adornment, "Auto",
+                gojs(go.Shape,
                 {
                     fill: "#FFFFCC"
                 }),
-                $(go.TextBlock,{margin: 9}, new go.Binding("text", "description"))
+                gojs(go.TextBlock,{margin: 9}, new go.Binding("text", "description"))
             );
     }
 }

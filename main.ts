@@ -33,13 +33,11 @@ function confirmModal(callback)
 
 
 async function init()
-{
+{    
     const urlParams = new URLSearchParams(window.location.search);
     project = urlParams.get('project');
     if(urlParams.get('debugMode')) debugMode = true;
     Details.init();
-    //dataString = await Util.getData();
-    //unsavedChanges(false);
     load();
 
     var gojs = go.GraphObject.make;
@@ -179,7 +177,6 @@ async function init()
                 } 
             })                        
             );
-    
 
     myDiagram.groupTemplateMap.add("API", Template.apiTemplate());
     myDiagram.nodeTemplateMap.add("Operation", Template.operationTemplate());
