@@ -15,20 +15,18 @@ function unsavedChanges(value:boolean)
 }
 
 
-var confirmModal  = function(callback)
+function confirmModal(callback)
 {  
-    $("#btn-confirm").on("click", function(){
-        $("#mi-modal").modal('show');
-    });
-
-    $("#modal-btn-si").on("click", function(){
+    $('#modal-btn-si').on('click', function()
+    {
         callback(true);
-        $("#mi-modal").modal('hide');
+        $('#confirmModal').modal('hide');
     });
 
-    $("#modal-btn-no").on("click", function(){
+    $('#modal-btn-no').on('click', function()
+    {
         callback(false);
-        $("#mi-modal").modal('hide');
+        $('#confirmModal').modal('hide');
     });
 };
 
@@ -57,33 +55,36 @@ async function init()
             contentAlignment: go.Spot.Center,
             "undoManager.isEnabled": true,
             "draggingTool.isGridSnapEnabled": true, 
+            "commandHandler.canDeleteSelection": function()
+            {
+                $('#modal-btn-si').on('click', function()
+                {
+                    $('#confirmModal').modal('hide');
+                    return go.CommandHandler.prototype.canDeleteSelection.call(myDiagram.commandHandler);                    
+                });
+            
+                $('#modal-btn-no').on('click', function()
+                {
+                    $('#confirmModal').modal('hide');
+                });
+                $('#confirmModal').modal();
+            },
             allowDrop:true,
             mouseDrop: function(e) 
             {                     
                 if(e.diagram.selection.first().category=="Operation")
                     e.diagram.currentTool.doCancel();
             },
-            layout: Util.getcurrentLayout(),
-            SelectionDeleting:function(d)
-            {
-                //d.cancel=true;
-               // confirmModal(function(confirm:boolean)
-                //{
-                  //  if(confirm)
-                   //     d.cancel=false;
-                //})
-            }
+            layout: Util.getcurrentLayout()
         });
 
         myDiagram.addModelChangedListener(function(evt) 
         {
             if (evt.isTransactionFinished) 
             {
-                console.log("smell");
                 var latestData = myDiagram.model.toJson();
                 if(dataString != latestData)
                 {
-                    console.log("poop");
                     dataString = latestData;
                     unsavedChanges(true);
                 }
@@ -175,6 +176,7 @@ async function init()
                 } 
             })                        
             );
+    
 
     myDiagram.groupTemplateMap.add("API", Template.apiTemplate());
     myDiagram.nodeTemplateMap.add("Operation", Template.operationTemplate());
