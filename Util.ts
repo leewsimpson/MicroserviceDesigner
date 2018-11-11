@@ -9,17 +9,18 @@ namespace Util
         });
     }
 
-    export function showHideAll(visible:boolean)
+    export function showHideAll(visible:boolean, linksVisible:boolean)
     {
         myDiagram.startTransaction();
         myDiagram.nodes.each(function(node) {node.visible = visible;});
+        myDiagram.links.each(function(node) {node.visible = linksVisible;});
         myDiagram.layout = Util.getcurrentLayout();
         myDiagram.commitTransaction();
     }
 
-    export function focusOnAPI(diagram, key)
+    export function focusOnAPI(diagram, key:string)
     {
-        showHideAll(false);
+        showHideAll(false, true);
         diagram.startTransaction();
 
         var insideOperations = diagram.model.nodeDataArray.filter(function(node){return node.group == key;});
@@ -54,7 +55,7 @@ namespace Util
 
     export function focus(diagram, key)
     {
-        showHideAll(false);
+        showHideAll(false, false);
         diagram.startTransaction();
 
         var linkedNodeKeys = diagram.model.linkDataArray.filter(function(f) {return f.from == key || f.to == key;});
@@ -75,6 +76,16 @@ namespace Util
         diagram.nodes.each(function(node) 
         {
             if(containerNodes.some(function(c) {return c.key==node.data.key})){node.visible = true;}
+        });
+        diagram.links.each(function(link) 
+        {   
+            if(link.fromNode && link.toNode)
+            {
+                if(linkedNodeKeys.some(function(n) {return link.fromNode.key==n.from && link.toNode.key == n.to;}))
+                {
+                    link.visible = true;
+                }
+            }
         });
 
         diagram.layout = Util.getcurrentLayout();

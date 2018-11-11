@@ -20,7 +20,6 @@ module Details
                 Description : <string>$('#detail-description').val()
             }
             $('#detailModal').modal('hide');
-            console.log(d);
 
             callback(d);
         });
@@ -32,7 +31,7 @@ module Details
     }
 
     export function showDetails(input: Detail, cb)
-    {        
+    {   
         $('#detail-name').val(input.Name.toString());
         if(input.Description) 
             $('#detail-description').val(input.Description.toString());
@@ -42,7 +41,7 @@ module Details
         if(input.DetailLink) 
             $('#detail-url').val(input.DetailLink.toString());
         else
-            $('#detail-url').val(); 
+            $('#detail-url').val(""); 
 
         callback = cb;
         $('#detailModal').modal();
