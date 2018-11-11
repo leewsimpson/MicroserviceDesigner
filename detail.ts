@@ -7,14 +7,10 @@ module Details
         Description: string;
     }
 
-    export function showDetails(input: Detail, callback)
-    {        
-        $('#detail-name').val(input.Name.toString());
-        if(input.Description) $('#detail-description').val(input.Description.toString());
-        if(input.DetailLink) $('#detail-url').val(input.DetailLink.toString());
+    var callback;
 
-        $('#detailModal').modal();
-
+    export function init()
+    {
         $('#detail-btn-ok').on('click', function()
         {
             let d:Detail =
@@ -24,6 +20,7 @@ module Details
                 Description : <string>$('#detail-description').val()
             }
             $('#detailModal').modal('hide');
+            console.log(d);
 
             callback(d);
         });
@@ -32,5 +29,22 @@ module Details
         {
             $('#detailModal').modal('hide');
         });
+    }
+
+    export function showDetails(input: Detail, cb)
+    {        
+        $('#detail-name').val(input.Name.toString());
+        if(input.Description) 
+            $('#detail-description').val(input.Description.toString());
+        else
+            $('#detail-description').val("");
+
+        if(input.DetailLink) 
+            $('#detail-url').val(input.DetailLink.toString());
+        else
+            $('#detail-url').val(); 
+
+        callback = cb;
+        $('#detailModal').modal();
     }
 }

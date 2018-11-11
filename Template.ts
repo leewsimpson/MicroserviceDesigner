@@ -96,6 +96,7 @@ module Template
             ungroupable: true,
             computesBoundsAfterDrag: true,
             computesBoundsIncludingLocation: true,
+            toolTip: toolTip(),
             mouseDragEnter: function(e, group, prev){group.isHighlighted = true;},
             mouseDragLeave: function(e, group, next){group.isHighlighted = false;},
             mouseDrop: function(e, group){group.addMembers(e.diagram.selection, true);},
@@ -169,6 +170,7 @@ module Template
                 ungroupable: true,
                 computesBoundsAfterDrag: true,
                 computesBoundsIncludingLocation: true,
+                toolTip: toolTip(),
                 mouseDragEnter: function(e, group, prev){group.isHighlighted = true;},
                 mouseDragLeave: function(e, group, next){group.isHighlighted = false;},
                 mouseDrop: function(e, group){group.addMembers(e.diagram.selection, true);},
@@ -245,17 +247,7 @@ module Template
                 {
                     width: 50,
                     height: 50,
-                    toolTip: $(go.Adornment, "Auto",
-                        $(go.Shape,
-                        {
-                            fill: "#FFFFCC"
-                        }),
-                        $(go.TextBlock,
-                            {
-                                margin: 4
-                            }, // the tooltip shows the result of calling nodeInfo(data)
-                            new go.Binding("text", "Description"))
-                    ),
+                    toolTip: toolTip(),
                     contextMenu: $(go.Adornment, "Vertical", 
                         contextMenuFocus(),
                         contextMenuHide(),
@@ -269,13 +261,13 @@ module Template
                     fill: "#0F6E00",
                     strokeWidth: 0,
                     portId: "",
-                    cursor: "pointer", // the Shape is the port, not the whole Node
-                    // allow all kinds of links from and to this port
+                    cursor: "pointer", 
                     fromLinkable: true,
                     toLinkable: true,
                     fromSpot: go.Spot.AllSides,
                     toSpot: go.Spot.AllSides
-                })
+                }),
+                $(go.Panel, "Auto", infoIcon())
             ),
             $(go.TextBlock,
                 {
@@ -291,58 +283,7 @@ module Template
             )
         );
     }
-
-    export function integrationPointTemplate()
-    {
-        var $ = go.GraphObject.make;
-
-        return $(go.Node, "Vertical",
-            {
-                alignment: go.Spot.Center
-            },
-            $(go.Panel, "Auto",
-                {
-                    width: 20,
-                    height: 20,
-                    toolTip: $(go.Adornment, "Auto",
-                        $(go.Shape,
-                        {
-                            fill: "gray"
-                        }),
-                        $(go.TextBlock,
-                            {
-                                margin: 4
-                            }, // the tooltip shows the result of calling nodeInfo(data)
-                            new go.Binding("text", "Description"))
-                    )
-                },
-                $(go.Shape, "Circle",
-                {
-                    fill: "orange",
-                    strokeWidth: 0,
-                    portId: "",
-                    cursor: "pointer", // the Shape is the port, not the whole Node
-                    fromLinkable: true,
-                    toLinkable: true,
-                    fromSpot: go.Spot.AllSides,
-                    toSpot: go.Spot.AllSides,
-                    alignment: go.Spot.Center
-                })
-            ),
-            $(go.TextBlock,
-                {
-                    margin: 10,
-                    //maxSize: new go.Size(160, NaN),
-                    wrap: go.TextBlock.WrapFit,
-                    textAlign: "center",
-                    stroke: "orange",
-                    editable: true
-                },
-                new go.Binding("text", "name").makeTwoWay()
-            )
-        );
-    }
-
+    
     export function linkTemplate()
     {
         var $ = go.GraphObject.make;
@@ -351,7 +292,8 @@ module Template
             {
                 //routing:go.Link.AvoidsNodes,
                 curve: go.Link.JumpOver,
-                corner: 5
+                corner: 5,
+                toolTip: toolTip()
             // routing: go.Link.Orthogonal ,
                 //layerName: "Foreground",
                 //reshapable: true
@@ -385,23 +327,13 @@ module Template
                 {
                     width: 20,
                     height: 20,
-                    toolTip: $(go.Adornment, "Auto",
-                        $(go.Shape,
-                        {
-                            fill: "#FFFFCC"
-                        }),
-                        $(go.TextBlock,
-                            {
-                                margin: 4
-                            }, // the tooltip shows the result of calling nodeInfo(data)
-                            new go.Binding("text", "Description"))
-                    ),
+                    toolTip: toolTip(),
                     contextMenu: $(go.Adornment, "Vertical", 
                             contextMenuFocus(),
                             contextMenuHide(),
-                            contextMenuDetails(),
                             contextItemReferenceTo(),
-                            contextItemReferenceFrom())
+                            contextItemReferenceFrom(),
+                            contextMenuDetails())
                 },
                 $(go.Shape, "Circle",
                 {
@@ -440,6 +372,7 @@ module Template
         {
             width: 100,
             height: 50,
+            toolTip: toolTip(),
             contextMenu: $(go.Adornment, "Vertical",
                 contextMenuFocus(),
                 contextMenuHide(),
@@ -489,5 +422,18 @@ module Template
         },
         new go.Binding("visible", "", function (data, node){if(data.detailLink) return true; else return false;})
         );
+    }
+
+    function toolTip()
+    {
+        var $ = go.GraphObject.make;
+
+        return $(go.Adornment, "Auto",
+                $(go.Shape,
+                {
+                    fill: "#FFFFCC"
+                }),
+                $(go.TextBlock,{margin: 9}, new go.Binding("text", "description"))
+            );
     }
 }

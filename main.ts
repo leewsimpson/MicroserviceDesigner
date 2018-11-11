@@ -1,6 +1,7 @@
 var myDiagram:go.Diagram;
 var dataString:string;
 var project:string;
+var debugMode:boolean;
 
 function unsavedChanges(value:boolean)
 {
@@ -35,7 +36,8 @@ async function init()
 {
     const urlParams = new URLSearchParams(window.location.search);
     project = urlParams.get('project');
-
+    if(urlParams.get('debugMode')) debugMode = true;
+    Details.init();
     //dataString = await Util.getData();
     //unsavedChanges(false);
     load();
@@ -92,6 +94,7 @@ async function init()
                 loadAPIs(dataString);
                 loadSystems(dataString);
                 loadEvents(dataString);
+                updateDebug(dataString);
             }
         });
         //gojs(go.TextBlock, "Undo"),{ click: function(e, obj) { e.diagram.commandHandler.undo(); } },
@@ -185,9 +188,6 @@ async function init()
     myDiagram.nodeTemplateMap.add("System", Template.systemTemplate());
     myDiagram.nodeTemplateMap.add("Event", Template.eventTemplate());
     myDiagram.linkTemplateMap.add("", Template.linkTemplate());
-       
-    //myDiagram.model = go.Model.fromJson(dataString);
-
 };
 
 function getCategory(dataString, category)
@@ -335,4 +335,10 @@ function generateImageLink(x)
             maxSize :new go.Size(Infinity,Infinity)
         }
     ).src;
+}
+
+function updateDebug(dataString)
+{
+    if(debugMode)
+        $("#dataDebugger").text(dataString);
 }
