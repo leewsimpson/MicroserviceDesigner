@@ -89,75 +89,72 @@ module Template
     {
         var $ = go.GraphObject.make;
         return $(go.Group, "Vertical",
+        {
+            fromSpot: go.Spot.AllSides,
+            toSpot: go.Spot.AllSides,
+            stretch: go.GraphObject.Fill,
+            ungroupable: true,
+            computesBoundsAfterDrag: true,
+            computesBoundsIncludingLocation: true,
+            mouseDragEnter: function(e, group, prev){group.isHighlighted = true;},
+            mouseDragLeave: function(e, group, next){group.isHighlighted = false;},
+            mouseDrop: function(e, group){group.addMembers(e.diagram.selection, true);},
+            layout: $(go.LayeredDigraphLayout,
             {
-                fromSpot: go.Spot.AllSides,
-                toSpot: go.Spot.AllSides,
-                stretch: go.GraphObject.Fill,
-                ungroupable: true,
-                computesBoundsAfterDrag: true,
-                computesBoundsIncludingLocation: true,
-                mouseDragEnter: function(e, group, prev){group.isHighlighted = true;},
-                mouseDragLeave: function(e, group, next){group.isHighlighted = false;},
-                mouseDrop: function(e, group){group.addMembers(e.diagram.selection, true);},
-                layout: $(go.LayeredDigraphLayout,
+                setsPortSpots: true,
+                direction: 90
+            }),
+            contextMenu: $(go.Adornment, "Vertical", 
+                $("ContextMenuButton", $(go.TextBlock, "Focus"), 
                 {
-                    setsPortSpots: true,
-                    direction: 90
+                    click: function(e, obj){Util.focusOnAPI(e.diagram, obj.part.data.key)}
                 }),
-                contextMenu: $(go.Adornment, "Vertical", 
-                    $("ContextMenuButton", $(go.TextBlock, "Focus"), 
+                $("ContextMenuButton", $(go.TextBlock, "New Operation"), 
+                { 
+                    click: function(e, obj)
                     {
-                        click: function(e, obj){Util.focusOnAPI(e.diagram, obj.part.data.key)}
-                    }),
-                    $("ContextMenuButton", $(go.TextBlock, "New Operation"), 
-                    { 
-                        click: function(e, obj)
+                        var diagram = e.diagram;
+                        diagram.startTransaction('new Operation');
+                        var data = 
                         {
-                            var diagram = e.diagram;
-                            diagram.startTransaction('new Operation');
-                            var data = 
-                            {
-                                category : "Operation",
-                                group : obj.part.data.key,
-                                name : "newOperation"
-                            };
-                            diagram.model.addNodeData(data);
-                            var part = diagram.findPartForData(data);
-                            part.location = diagram.toolManager.contextMenuTool.mouseDownPoint;
-                            diagram.commitTransaction('new Operation');
-                            var txt = part.findObject("name");
-                            diagram.commandHandler.editTextBlock(txt);                           
-                        }
-                    }),
-                    contextMenuHide(),
-                    contextMenuDetails()
-                    )},
-                $(go.TextBlock,
-                {
-                    name:"name",
-                    margin: 8,
-                    maxSize: new go.Size(160, NaN),
-                    wrap: go.TextBlock.WrapFit,
-                    stroke: "#00a1de",
-                    editable: true
-                },
+                            category : "Operation",
+                            group : obj.part.data.key,
+                            name : "newOperation"
+                        };
+                        diagram.model.addNodeData(data);
+                        var part = diagram.findPartForData(data);
+                        part.location = diagram.toolManager.contextMenuTool.mouseDownPoint;
+                        diagram.commitTransaction('new Operation');
+                        var txt = part.findObject("name");
+                        diagram.commandHandler.editTextBlock(txt);                           
+                    }
+                }),
+                contextMenuHide(),
+                contextMenuDetails()
+            )
+            },
+            $(go.TextBlock,
+            {
+                name:"name",
+                margin: 8,
+                maxSize: new go.Size(160, NaN),
+                wrap: go.TextBlock.WrapFit,
+                stroke: "#00a1de",
+                editable: true
+            },
                 new go.Binding("text", "name").makeTwoWay()
-                ),
+            ),
+            $(go.Panel, "Spot",
                 $(go.Panel, "Auto",
                     $(go.Shape, "RoundedRectangle",
                     {
                         fill: "#00a1de",
                         strokeWidth: 0,                        
                     }),
-                    $(go.Panel, "Table",                        
-                        $(go.Panel, "TableRow", {row:0},
-                            infoIcon()                            
-                        ),
-                    $(go.Panel, "TableRow", {row:1},
-                        $(go.Placeholder, {padding: 20})
-                    )
-                    )
-                )
+                    $(go.Placeholder, {padding: 20})
+                ),  
+                infoIcon()                            
+            )
         );
     }
 
@@ -439,50 +436,41 @@ module Template
     {
         var $ = go.GraphObject.make;
 
-        return $(go.Node, "Auto",
-            $(go.Panel, "Auto",
+        return $(go.Node, "Spot",
+        {
+            width: 100,
+            height: 50,
+            contextMenu: $(go.Adornment, "Vertical",
+                contextMenuFocus(),
+                contextMenuHide(),
+                contextItemReferenceTo(),
+                contextItemReferenceFrom(),
+                contextMenuDetails())
+        },
+        $(go.Panel, "Auto",                
+            $(go.Shape, "RoundedRectangle",
+            {
+                fill: "gray",
+                strokeWidth: 0,
+                portId: "",
+                cursor: "pointer",
+                fromSpot: go.Spot.AllSides,
+                toSpot: go.Spot.AllSides,
+                fromLinkable: true,
+                toLinkable: true                                             
+            }),
+            $(go.TextBlock,
                 {
-                    width: 100,
-                    height: 50,
-                    contextMenu: $(go.Adornment, "Vertical",
-                        contextMenuFocus(),
-                        contextMenuHide(),
-                        contextItemReferenceTo(),
-                        contextItemReferenceFrom(),
-                        contextMenuDetails())
+                    name:"name",
+                    margin: 10,
+                    wrap: go.TextBlock.WrapFit,
+                    stroke: "white",
+                    editable: true
                 },
-                $(go.Panel, "Auto",
-                    $(go.Shape, "RoundedRectangle",
-                    {
-                        fill: "gray",
-                        strokeWidth: 0,
-                        portId: "",
-                        cursor: "pointer",
-                        fromSpot: go.Spot.AllSides,
-                        toSpot: go.Spot.AllSides,
-                        fromLinkable: true,
-                        toLinkable: true                                             
-                    }),
-                    $(go.Panel, "Table",                        
-                        $(go.Panel, "TableRow", {row:0},
-                            infoIcon()                            
-                        ),
-                        $(go.Panel, "TableRow", {row:1, padding: 20},
-                            $(go.TextBlock,
-                                {
-                                    name:"name",
-                                    margin: 10,
-                                    //maxSize: new go.Size(160, NaN),
-                                    wrap: go.TextBlock.WrapFit,
-                                    stroke: "white",
-                                    editable: true
-                                },
-                                new go.Binding("text", "name").makeTwoWay()
-                            )
-                        )
-                    )
-                )
+                new go.Binding("text", "name").makeTwoWay()
             )
+        ),
+        infoIcon()
         );
     }
 
@@ -492,7 +480,7 @@ module Template
         return $(go.Picture, "info.png", 
         {
             maxSize: new go.Size(14, 14), 
-            alignment: go.Spot.Right,                                
+            alignment: new go.Spot(1,0,-10,10),
             click : function(e, obj)
             {
                 window.open(obj.part.data.detailLink, "new")
